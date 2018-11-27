@@ -1,4 +1,22 @@
-export function statement(invoice, plays) {
+interface Performance {
+  playID: string;
+  audience: number;
+}
+
+interface Invoice {
+  customer: string;
+  performances: Array<Performance>;
+}
+
+interface Play {
+  name: string;
+  type: string;
+}
+
+export function statement(
+  invoice: Invoice,
+  plays: { [playID: string]: Play }
+): string {
   let totalAmount = 0;
   let volumeCredits = 0;
   let result = `Statement for ${invoice.customer}\n`;
