@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2018",
+    "sourceMap": true,
+    "types": ["node"]
+  },
+  "exclude": ["node_modules"]
+}
