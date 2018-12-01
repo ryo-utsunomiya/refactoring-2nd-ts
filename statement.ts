@@ -13,6 +13,14 @@ interface Play {
   type: string;
 }
 
+function format(aNumber: number): string {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2
+  }).format(aNumber);
+}
+
 export function statement(
   invoice: Invoice,
   plays: { [playID: string]: Play }
@@ -20,11 +28,6 @@ export function statement(
   let totalAmount = 0;
   let volumeCredits = 0;
   let result = `Statement for ${invoice.customer}\n`;
-  const format = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2
-  }).format;
 
   const playFor = (aPerformance: Performance): Play =>
     plays[aPerformance.playID];
