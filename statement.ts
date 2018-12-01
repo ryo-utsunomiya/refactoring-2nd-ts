@@ -29,7 +29,7 @@ export function statement(
   const playFor = (aPerformance: Performance): Play =>
     plays[aPerformance.playID];
 
-  function amountFor(aPerformance: Performance): number {
+  const amountFor = (aPerformance: Performance): number => {
     let result = 0;
 
     switch (playFor(aPerformance).type) {
@@ -50,14 +50,20 @@ export function statement(
         throw new Error(`unknown type: ${playFor(aPerformance).type}`);
     }
     return result;
-  }
+  };
+
+  const volumeCreditsFor = (aPerformance: Performance): number => {
+    let result = 0;
+    result += Math.max(aPerformance.audience - 30, 0);
+    if (playFor(aPerformance).type === "comedy") {
+      result += Math.floor(aPerformance.audience / 5);
+    }
+    return result;
+  };
 
   for (let perf of invoice.performances) {
     // add volume credits
-    volumeCredits += Math.max(perf.audience - 30, 0);
-    // add extra credit for every ten comedy attendees
-    if ("comedy" === playFor(perf).type)
-      volumeCredits += Math.floor(perf.audience / 5);
+    volumeCredits += volumeCreditsFor(perf);
 
     // print line for this order
     result += `  ${playFor(perf).name}: ${format(amountFor(perf) / 100)} (${
