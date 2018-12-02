@@ -68,7 +68,7 @@ export function statement(
     return result;
   };
 
-  const computeTotalAmount = (): number => {
+  const totalAmount = (): number => {
     let result = 0;
     for (let perf of invoice.performances) {
       result += amountFor(perf);
@@ -85,7 +85,7 @@ export function statement(
     } seats)\n`;
   }
 
-  result += `Amount owed is ${usd(computeTotalAmount())}\n`;
+  result += `Amount owed is ${usd(totalAmount())}\n`;
   result += `You earned ${totalVolumeCredits()} credits\n`;
   return result;
 }
