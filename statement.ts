@@ -25,8 +25,6 @@ export function statement(
   invoice: Invoice,
   plays: { [playID: string]: Play }
 ): string {
-  let result = `Statement for ${invoice.customer}\n`;
-
   const playFor = (aPerformance: Performance): Play =>
     plays[aPerformance.playID];
 
@@ -77,6 +75,8 @@ export function statement(
     }
     return result;
   };
+
+  let result = `Statement for ${invoice.customer}\n`;
 
   for (let perf of invoice.performances) {
     // print line for this order
