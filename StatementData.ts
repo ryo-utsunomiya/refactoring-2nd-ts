@@ -1,45 +1,5 @@
 import { Invoice, Play, Performance } from "./types";
 
-function amountFor(aPerformance: StatementDataPerformance): number {
-  let result = 0;
-
-  switch (aPerformance.play.type) {
-    case "tragedy":
-      result = 40000;
-      if (aPerformance.audience > 30) {
-        result += 1000 * (aPerformance.audience - 30);
-      }
-      break;
-    case "comedy":
-      result = 30000;
-      if (aPerformance.audience > 20) {
-        result += 10000 + 500 * (aPerformance.audience - 20);
-      }
-      result += 300 * aPerformance.audience;
-      break;
-    default:
-      throw new Error(`unknown type: ${aPerformance.play.type}`);
-  }
-  return result;
-}
-
-function volumeCreditsFor(aPerformance: StatementDataPerformance): number {
-  let result = 0;
-  result += Math.max(aPerformance.audience - 30, 0);
-  if (aPerformance.play.type === "comedy") {
-    result += Math.floor(aPerformance.audience / 5);
-  }
-  return result;
-}
-
-function totalAmount(data: StatementData): number {
-  return data.performances.reduce((total, p) => total + p.amount, 0);
-}
-
-function totalVolumeCredits(data: StatementData): number {
-  return data.performances.reduce((total, p) => total + p.volumeCredits, 0);
-}
-
 class StatementDataPerformance {
   playID: string;
   audience: number;
@@ -51,8 +11,40 @@ class StatementDataPerformance {
     this.playID = aPerformance.playID;
     this.audience = aPerformance.audience;
     this.play = play;
-    this.amount = amountFor(this);
-    this.volumeCredits = volumeCreditsFor(this);
+    this.amount = this.computeAmount();
+    this.volumeCredits = this.computeVolumeCredits();
+  }
+
+  private computeAmount(): number {
+    let result = 0;
+
+    switch (this.play.type) {
+      case "tragedy":
+        result = 40000;
+        if (this.audience > 30) {
+          result += 1000 * (this.audience - 30);
+        }
+        break;
+      case "comedy":
+        result = 30000;
+        if (this.audience > 20) {
+          result += 10000 + 500 * (this.audience - 20);
+        }
+        result += 300 * this.audience;
+        break;
+      default:
+        throw new Error(`unknown type: ${this.play.type}`);
+    }
+    return result;
+  }
+
+  private computeVolumeCredits(): number {
+    let result = 0;
+    result += Math.max(this.audience - 30, 0);
+    if (this.play.type === "comedy") {
+      result += Math.floor(this.audience / 5);
+    }
+    return result;
   }
 }
 
@@ -68,7 +60,13 @@ export class StatementData {
       aPerformance =>
         new StatementDataPerformance(aPerformance, plays[aPerformance.playID])
     );
-    this.totalAmount = totalAmount(this);
-    this.totalVolumeCredits = totalVolumeCredits(this);
+    this.totalAmount = this.performances.reduce(
+      (total, p) => total + p.amount,
+      0
+    );
+    this.totalVolumeCredits = this.performances.reduce(
+      (total, p) => total + p.volumeCredits,
+      0
+    );
   }
 }
