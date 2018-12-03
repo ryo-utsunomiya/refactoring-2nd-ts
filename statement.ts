@@ -1,5 +1,5 @@
 import { Invoice, Play } from "./types";
-import { createStatementData, StatementData } from "./createStatementData";
+import { StatementData } from "./StatementData";
 
 function usd(aNumber: number): string {
   return new Intl.NumberFormat("en-US", {
@@ -42,12 +42,12 @@ export function statement(
   invoice: Invoice,
   plays: { [playID: string]: Play }
 ): string {
-  return renderPlainText(createStatementData(invoice, plays));
+  return renderPlainText(new StatementData(invoice, plays));
 }
 
 export function htmlStatement(
   invoice: Invoice,
   plays: { [playID: string]: Play }
 ): string {
-  return renderHTML(createStatementData(invoice, plays));
+  return renderHTML(new StatementData(invoice, plays));
 }

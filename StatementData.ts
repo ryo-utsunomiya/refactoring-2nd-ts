@@ -1,25 +1,5 @@
 import { Invoice, Play, Performance } from "./types";
 
-class StatementDataPerformance {
-  playID: string;
-  audience: number;
-  play: Play;
-  amount: number;
-  volumeCredits: number;
-
-  constructor(aPerformance: Performance) {
-    this.playID = aPerformance.playID;
-    this.audience = aPerformance.audience;
-  }
-}
-
-export class StatementData {
-  customer: string;
-  performances: Array<StatementDataPerformance>;
-  totalAmount: number;
-  totalVolumeCredits: number;
-}
-
 function amountFor(aPerformance: StatementDataPerformance): number {
   let result = 0;
 
@@ -71,16 +51,31 @@ function enrichPerformance(
   return result;
 }
 
-export function createStatementData(
-  invoice: Invoice,
-  plays: { [playID: string]: Play }
-): StatementData {
-  const result = new StatementData();
-  result.customer = invoice.customer;
-  result.performances = invoice.performances.map(aPerformance =>
-    enrichPerformance(aPerformance, plays)
-  );
-  result.totalAmount = totalAmount(result);
-  result.totalVolumeCredits = totalVolumeCredits(result);
-  return result;
+class StatementDataPerformance {
+  playID: string;
+  audience: number;
+  play: Play;
+  amount: number;
+  volumeCredits: number;
+
+  constructor(aPerformance: Performance) {
+    this.playID = aPerformance.playID;
+    this.audience = aPerformance.audience;
+  }
+}
+
+export class StatementData {
+  customer: string;
+  performances: Array<StatementDataPerformance>;
+  totalAmount: number;
+  totalVolumeCredits: number;
+
+  constructor(invoice: Invoice, plays: { [playID: string]: Play }) {
+    this.customer = invoice.customer;
+    this.performances = invoice.performances.map(aPerformance =>
+      enrichPerformance(aPerformance, plays)
+    );
+    this.totalAmount = totalAmount(this);
+    this.totalVolumeCredits = totalVolumeCredits(this);
+  }
 }
