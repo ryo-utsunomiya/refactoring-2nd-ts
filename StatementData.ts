@@ -40,17 +40,6 @@ function totalVolumeCredits(data: StatementData): number {
   return data.performances.reduce((total, p) => total + p.volumeCredits, 0);
 }
 
-function enrichPerformance(
-  aPerformance: Performance,
-  plays: { [playID: string]: Play }
-): StatementDataPerformance {
-  const result = new StatementDataPerformance(aPerformance);
-  result.play = plays[aPerformance.playID];
-  result.amount = amountFor(result);
-  result.volumeCredits = volumeCreditsFor(result);
-  return result;
-}
-
 class StatementDataPerformance {
   playID: string;
   audience: number;
@@ -58,9 +47,12 @@ class StatementDataPerformance {
   amount: number;
   volumeCredits: number;
 
-  constructor(aPerformance: Performance) {
+  constructor(aPerformance: Performance, play: Play) {
     this.playID = aPerformance.playID;
     this.audience = aPerformance.audience;
+    this.play = play;
+    this.amount = amountFor(this);
+    this.volumeCredits = volumeCreditsFor(this);
   }
 }
 
@@ -72,8 +64,9 @@ export class StatementData {
 
   constructor(invoice: Invoice, plays: { [playID: string]: Play }) {
     this.customer = invoice.customer;
-    this.performances = invoice.performances.map(aPerformance =>
-      enrichPerformance(aPerformance, plays)
+    this.performances = invoice.performances.map(
+      aPerformance =>
+        new StatementDataPerformance(aPerformance, plays[aPerformance.playID])
     );
     this.totalAmount = totalAmount(this);
     this.totalVolumeCredits = totalVolumeCredits(this);
