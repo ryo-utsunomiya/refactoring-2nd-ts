@@ -47,8 +47,6 @@ class StatementDataPerformance {
 export class StatementData {
   customer: string;
   performances: Array<StatementDataPerformance>;
-  totalAmount: number;
-  totalVolumeCredits: number;
 
   constructor(invoice: Invoice, plays: { [playID: string]: Play }) {
     this.customer = invoice.customer;
@@ -56,13 +54,13 @@ export class StatementData {
       aPerformance =>
         new StatementDataPerformance(aPerformance, plays[aPerformance.playID])
     );
-    this.totalAmount = this.performances.reduce(
-      (total, p) => total + p.amount,
-      0
-    );
-    this.totalVolumeCredits = this.performances.reduce(
-      (total, p) => total + p.volumeCredits,
-      0
-    );
+  }
+
+  get totalAmount() {
+    return this.performances.reduce((total, p) => total + p.amount, 0);
+  }
+
+  get totalVolumeCredits() {
+    return this.performances.reduce((total, p) => total + p.volumeCredits, 0);
   }
 }
