@@ -20,7 +20,7 @@ export class StatementData {
   totalVolumeCredits: number;
 }
 
-const amountFor = (aPerformance: StatementDataPerformance): number => {
+function amountFor(aPerformance: StatementDataPerformance): number {
   let result = 0;
 
   switch (aPerformance.play.type) {
@@ -41,33 +41,35 @@ const amountFor = (aPerformance: StatementDataPerformance): number => {
       throw new Error(`unknown type: ${aPerformance.play.type}`);
   }
   return result;
-};
+}
 
-const volumeCreditsFor = (aPerformance: StatementDataPerformance): number => {
+function volumeCreditsFor(aPerformance: StatementDataPerformance): number {
   let result = 0;
   result += Math.max(aPerformance.audience - 30, 0);
   if (aPerformance.play.type === "comedy") {
     result += Math.floor(aPerformance.audience / 5);
   }
   return result;
-};
+}
 
-const totalAmount = (data: StatementData): number =>
-  data.performances.reduce((total, p) => total + p.amount, 0);
+function totalAmount(data: StatementData): number {
+  return data.performances.reduce((total, p) => total + p.amount, 0);
+}
 
-const totalVolumeCredits = (data: StatementData): number =>
-  data.performances.reduce((total, p) => total + p.volumeCredits, 0);
+function totalVolumeCredits(data: StatementData): number {
+  return data.performances.reduce((total, p) => total + p.volumeCredits, 0);
+}
 
-const enrichPerformance = (
+function enrichPerformance(
   aPerformance: Performance,
   plays: { [playID: string]: Play }
-): StatementDataPerformance => {
+): StatementDataPerformance {
   const result = new StatementDataPerformance(aPerformance);
   result.play = plays[aPerformance.playID];
   result.amount = amountFor(result);
   result.volumeCredits = volumeCreditsFor(result);
   return result;
-};
+}
 
 export function createStatementData(
   invoice: Invoice,
