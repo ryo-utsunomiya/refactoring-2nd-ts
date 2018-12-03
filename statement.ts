@@ -3,11 +3,12 @@ interface Performance {
   audience: number;
 }
 
-interface RichPerformance {
+interface StatementDataPerformance {
   playID: string;
   audience: number;
   play: Play;
   amount: number;
+  volumeCredits: number;
 }
 
 interface Invoice {
@@ -22,7 +23,7 @@ interface Play {
 
 class StatementData {
   customer: string;
-  performances: Array<RichPerformance>;
+  performances: Array<StatementDataPerformance>;
 }
 
 function usd(aNumber: number): string {
@@ -34,19 +35,10 @@ function usd(aNumber: number): string {
 }
 
 function renderPlainText(data: StatementData): string {
-  const volumeCreditsFor = (aPerformance: RichPerformance): number => {
-    let result = 0;
-    result += Math.max(aPerformance.audience - 30, 0);
-    if (aPerformance.play.type === "comedy") {
-      result += Math.floor(aPerformance.audience / 5);
-    }
-    return result;
-  };
-
   const totalVolumeCredits = (): number => {
     let result = 0;
     for (let perf of data.performances) {
-      result += volumeCreditsFor(perf);
+      result += perf.volumeCredits;
     }
     return result;
   };
@@ -100,12 +92,24 @@ export function statement(
     return result;
   };
 
-  const enrichPerformance = (aPerformance: Performance): RichPerformance => {
+  const volumeCreditsFor = (aPerformance: Performance, play: Play): number => {
+    let result = 0;
+    result += Math.max(aPerformance.audience - 30, 0);
+    if (play.type === "comedy") {
+      result += Math.floor(aPerformance.audience / 5);
+    }
+    return result;
+  };
+
+  const enrichPerformance = (
+    aPerformance: Performance
+  ): StatementDataPerformance => {
     const playFor = (aPerformance: Performance) => plays[aPerformance.playID];
     return {
       ...aPerformance,
       play: playFor(aPerformance),
-      amount: amountFor(aPerformance, playFor(aPerformance))
+      amount: amountFor(aPerformance, playFor(aPerformance)),
+      volumeCredits: volumeCreditsFor(aPerformance, playFor(aPerformance))
     };
   };
 
