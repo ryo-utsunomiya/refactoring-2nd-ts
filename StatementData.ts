@@ -4,13 +4,11 @@ class StatementDataPerformance {
   playID: string;
   audience: number;
   play: Play;
-  volumeCredits: number;
 
   constructor(aPerformance: Performance, play: Play) {
     this.playID = aPerformance.playID;
     this.audience = aPerformance.audience;
     this.play = play;
-    this.volumeCredits = this.computeVolumeCredits();
   }
 
   get amount(): number {
@@ -36,30 +34,7 @@ class StatementDataPerformance {
     return result;
   }
 
-  private computeAmount(): number {
-    let result = 0;
-
-    switch (this.play.type) {
-      case "tragedy":
-        result = 40000;
-        if (this.audience > 30) {
-          result += 1000 * (this.audience - 30);
-        }
-        break;
-      case "comedy":
-        result = 30000;
-        if (this.audience > 20) {
-          result += 10000 + 500 * (this.audience - 20);
-        }
-        result += 300 * this.audience;
-        break;
-      default:
-        throw new Error(`unknown type: ${this.play.type}`);
-    }
-    return result;
-  }
-
-  private computeVolumeCredits(): number {
+  get volumeCredits(): number {
     let result = 0;
     result += Math.max(this.audience - 30, 0);
     if (this.play.type === "comedy") {
