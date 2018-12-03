@@ -15,6 +15,7 @@ interface Play {
 
 class StatementData {
   customer: string;
+  performances: Array<Performance>;
 }
 
 function usd(aNumber: number): string {
@@ -27,7 +28,6 @@ function usd(aNumber: number): string {
 
 function renderPlainText(
   data: StatementData,
-  invoice: Invoice,
   plays: { [playID: string]: Play }
 ): string {
   const playFor = (aPerformance: Performance): Play =>
@@ -67,7 +67,7 @@ function renderPlainText(
 
   const totalVolumeCredits = (): number => {
     let result = 0;
-    for (let perf of invoice.performances) {
+    for (let perf of data.performances) {
       result += volumeCreditsFor(perf);
     }
     return result;
@@ -75,7 +75,7 @@ function renderPlainText(
 
   const totalAmount = (): number => {
     let result = 0;
-    for (let perf of invoice.performances) {
+    for (let perf of data.performances) {
       result += amountFor(perf);
     }
     return result;
@@ -83,7 +83,7 @@ function renderPlainText(
 
   let result = `Statement for ${data.customer}\n`;
 
-  for (let perf of invoice.performances) {
+  for (let perf of data.performances) {
     // print line for this order
     result += `  ${playFor(perf).name}: ${usd(amountFor(perf))} (${
       perf.audience
@@ -101,5 +101,6 @@ export function statement(
 ): string {
   const statementData = new StatementData();
   statementData.customer = invoice.customer;
-  return renderPlainText(statementData, invoice, plays);
+  statementData.performances = invoice.performances;
+  return renderPlainText(statementData, plays);
 }
