@@ -21,9 +21,9 @@ function usd(aNumber: number): string {
   }).format(aNumber / 100);
 }
 
-export function statement(
+function renderPlainText(
   invoice: Invoice,
-  plays: { [playID: string]: Play }
+  plays: { [p: string]: Play }
 ): string {
   const playFor = (aPerformance: Performance): Play =>
     plays[aPerformance.playID];
@@ -88,4 +88,11 @@ export function statement(
   result += `Amount owed is ${usd(totalAmount())}\n`;
   result += `You earned ${totalVolumeCredits()} credits\n`;
   return result;
+}
+
+export function statement(
+  invoice: Invoice,
+  plays: { [playID: string]: Play }
+): string {
+  return renderPlainText(invoice, plays);
 }
