@@ -32,17 +32,11 @@ function usd(aNumber: number): string {
   }).format(aNumber / 100);
 }
 
-function renderPlainText(
-  data: StatementData,
-  plays: { [playID: string]: Play }
-): string {
-  const playFor = (aPerformance: Performance): Play =>
-    plays[aPerformance.playID];
-
-  const amountFor = (aPerformance: Performance): number => {
+function renderPlainText(data: StatementData): string {
+  const amountFor = (aPerformance: PerformanceAndPlay): number => {
     let result = 0;
 
-    switch (playFor(aPerformance).type) {
+    switch (aPerformance.play.type) {
       case "tragedy":
         result = 40000;
         if (aPerformance.audience > 30) {
@@ -57,15 +51,15 @@ function renderPlainText(
         result += 300 * aPerformance.audience;
         break;
       default:
-        throw new Error(`unknown type: ${playFor(aPerformance).type}`);
+        throw new Error(`unknown type: ${aPerformance.play.type}`);
     }
     return result;
   };
 
-  const volumeCreditsFor = (aPerformance: Performance): number => {
+  const volumeCreditsFor = (aPerformance: PerformanceAndPlay): number => {
     let result = 0;
     result += Math.max(aPerformance.audience - 30, 0);
-    if (playFor(aPerformance).type === "comedy") {
+    if (aPerformance.play.type === "comedy") {
       result += Math.floor(aPerformance.audience / 5);
     }
     return result;
@@ -115,5 +109,5 @@ export function statement(
   const statementData = new StatementData();
   statementData.customer = invoice.customer;
   statementData.performances = invoice.performances.map(addPlay);
-  return renderPlainText(statementData, plays);
+  return renderPlainText(statementData);
 }
