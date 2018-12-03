@@ -3,10 +3,11 @@ interface Performance {
   audience: number;
 }
 
-interface PerformanceAndPlay {
+interface RichPerformance {
   playID: string;
   audience: number;
   play: Play;
+  amount: number;
 }
 
 interface Invoice {
@@ -21,7 +22,7 @@ interface Play {
 
 class StatementData {
   customer: string;
-  performances: Array<PerformanceAndPlay>;
+  performances: Array<RichPerformance>;
 }
 
 function usd(aNumber: number): string {
@@ -33,30 +34,7 @@ function usd(aNumber: number): string {
 }
 
 function renderPlainText(data: StatementData): string {
-  const amountFor = (aPerformance: PerformanceAndPlay): number => {
-    let result = 0;
-
-    switch (aPerformance.play.type) {
-      case "tragedy":
-        result = 40000;
-        if (aPerformance.audience > 30) {
-          result += 1000 * (aPerformance.audience - 30);
-        }
-        break;
-      case "comedy":
-        result = 30000;
-        if (aPerformance.audience > 20) {
-          result += 10000 + 500 * (aPerformance.audience - 20);
-        }
-        result += 300 * aPerformance.audience;
-        break;
-      default:
-        throw new Error(`unknown type: ${aPerformance.play.type}`);
-    }
-    return result;
-  };
-
-  const volumeCreditsFor = (aPerformance: PerformanceAndPlay): number => {
+  const volumeCreditsFor = (aPerformance: RichPerformance): number => {
     let result = 0;
     result += Math.max(aPerformance.audience - 30, 0);
     if (aPerformance.play.type === "comedy") {
@@ -76,7 +54,7 @@ function renderPlainText(data: StatementData): string {
   const totalAmount = (): number => {
     let result = 0;
     for (let perf of data.performances) {
-      result += amountFor(perf);
+      result += perf.amount;
     }
     return result;
   };
@@ -85,7 +63,7 @@ function renderPlainText(data: StatementData): string {
 
   for (let perf of data.performances) {
     // print line for this order
-    result += `  ${perf.play.name}: ${usd(amountFor(perf))} (${
+    result += `  ${perf.play.name}: ${usd(perf.amount)} (${
       perf.audience
     } seats)\n`;
   }
@@ -99,15 +77,40 @@ export function statement(
   invoice: Invoice,
   plays: { [playID: string]: Play }
 ): string {
-  const addPlay = (aPerformance: Performance): PerformanceAndPlay => {
+  const amountFor = (aPerformance: Performance, play: Play): number => {
+    let result = 0;
+
+    switch (play.type) {
+      case "tragedy":
+        result = 40000;
+        if (aPerformance.audience > 30) {
+          result += 1000 * (aPerformance.audience - 30);
+        }
+        break;
+      case "comedy":
+        result = 30000;
+        if (aPerformance.audience > 20) {
+          result += 10000 + 500 * (aPerformance.audience - 20);
+        }
+        result += 300 * aPerformance.audience;
+        break;
+      default:
+        throw new Error(`unknown type: ${play.type}`);
+    }
+    return result;
+  };
+
+  const enrichPerformance = (aPerformance: Performance): RichPerformance => {
+    const playFor = (aPerformance: Performance) => plays[aPerformance.playID];
     return {
       ...aPerformance,
-      play: plays[aPerformance.playID]
+      play: playFor(aPerformance),
+      amount: amountFor(aPerformance, playFor(aPerformance))
     };
   };
 
   const statementData = new StatementData();
   statementData.customer = invoice.customer;
-  statementData.performances = invoice.performances.map(addPlay);
+  statementData.performances = invoice.performances.map(enrichPerformance);
   return renderPlainText(statementData);
 }
