@@ -13,6 +13,10 @@ interface Play {
   type: string;
 }
 
+class StatementData {
+  customer: string;
+}
+
 function usd(aNumber: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -22,7 +26,7 @@ function usd(aNumber: number): string {
 }
 
 function renderPlainText(
-  data: object,
+  data: StatementData,
   invoice: Invoice,
   plays: { [playID: string]: Play }
 ): string {
@@ -77,7 +81,7 @@ function renderPlainText(
     return result;
   };
 
-  let result = `Statement for ${invoice.customer}\n`;
+  let result = `Statement for ${data.customer}\n`;
 
   for (let perf of invoice.performances) {
     // print line for this order
@@ -95,6 +99,7 @@ export function statement(
   invoice: Invoice,
   plays: { [playID: string]: Play }
 ): string {
-  const statementData = {};
+  const statementData = new StatementData();
+  statementData.customer = invoice.customer;
   return renderPlainText(statementData, invoice, plays);
 }
