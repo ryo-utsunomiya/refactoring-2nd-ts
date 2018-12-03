@@ -3,6 +3,12 @@ interface Performance {
   audience: number;
 }
 
+interface PerformanceAndPlay {
+  playID: string;
+  audience: number;
+  play: Play;
+}
+
 interface Invoice {
   customer: string;
   performances: Array<Performance>;
@@ -15,7 +21,7 @@ interface Play {
 
 class StatementData {
   customer: string;
-  performances: Array<Performance>;
+  performances: Array<PerformanceAndPlay>;
 }
 
 function usd(aNumber: number): string {
@@ -85,7 +91,7 @@ function renderPlainText(
 
   for (let perf of data.performances) {
     // print line for this order
-    result += `  ${playFor(perf).name}: ${usd(amountFor(perf))} (${
+    result += `  ${perf.play.name}: ${usd(amountFor(perf))} (${
       perf.audience
     } seats)\n`;
   }
@@ -99,8 +105,15 @@ export function statement(
   invoice: Invoice,
   plays: { [playID: string]: Play }
 ): string {
+  const addPlay = (aPerformance: Performance): PerformanceAndPlay => {
+    return {
+      ...aPerformance,
+      play: plays[aPerformance.playID]
+    };
+  };
+
   const statementData = new StatementData();
   statementData.customer = invoice.customer;
-  statementData.performances = invoice.performances;
+  statementData.performances = invoice.performances.map(addPlay);
   return renderPlainText(statementData, plays);
 }
