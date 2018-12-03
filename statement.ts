@@ -22,8 +22,9 @@ function usd(aNumber: number): string {
 }
 
 function renderPlainText(
+  data: object,
   invoice: Invoice,
-  plays: { [p: string]: Play }
+  plays: { [playID: string]: Play }
 ): string {
   const playFor = (aPerformance: Performance): Play =>
     plays[aPerformance.playID];
@@ -94,5 +95,6 @@ export function statement(
   invoice: Invoice,
   plays: { [playID: string]: Play }
 ): string {
-  return renderPlainText(invoice, plays);
+  const statementData = {};
+  return renderPlainText(statementData, invoice, plays);
 }
