@@ -1,19 +1,14 @@
 import { Performance, Play } from "./types";
 
-class PerformanceCalculator {
+abstract class PerformanceCalculator {
   performance: Performance;
 
   constructor(aPerformance: Performance) {
     this.performance = aPerformance;
   }
 
-  get amount(): number {
-    throw new Error("subclass responsibility");
-  }
-
-  get volumeCredits(): number {
-    throw new Error("subclass responsibility");
-  }
+  abstract get amount(): number;
+  abstract get volumeCredits(): number;
 }
 
 class TragedyCalculator extends PerformanceCalculator {
