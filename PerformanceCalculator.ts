@@ -1,6 +1,6 @@
 import { Performance, Play } from "./types";
 
-export default class PerformanceCalculator {
+class PerformanceCalculator {
   performance: Performance;
   play: Play;
 
@@ -23,7 +23,7 @@ export default class PerformanceCalculator {
   }
 }
 
-export class TragedyCalculator extends PerformanceCalculator {
+class TragedyCalculator extends PerformanceCalculator {
   get amount(): number {
     let result = 40000;
     if (this.performance.audience > 30) {
@@ -32,7 +32,7 @@ export class TragedyCalculator extends PerformanceCalculator {
     return result;
   }
 }
-export class ComedyCalculator extends PerformanceCalculator {
+class ComedyCalculator extends PerformanceCalculator {
   get amount(): number {
     let result = 30000;
     if (this.performance.audience > 20) {
