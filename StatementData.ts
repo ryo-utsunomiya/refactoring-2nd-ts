@@ -6,21 +6,16 @@ class StatementDataPerformance {
   audience: number;
   play: Play;
   readonly amount: number;
+  readonly volumeCredits: number;
 
   constructor(aPerformance: Performance, play: Play) {
     this.playID = aPerformance.playID;
     this.audience = aPerformance.audience;
     this.play = play;
-    this.amount = new PerformanceCalculator(aPerformance, play).amount;
-  }
 
-  get volumeCredits(): number {
-    let result = 0;
-    result += Math.max(this.audience - 30, 0);
-    if (this.play.type === "comedy") {
-      result += Math.floor(this.audience / 5);
-    }
-    return result;
+    const calculator = new PerformanceCalculator(aPerformance, play);
+    this.amount = calculator.amount;
+    this.volumeCredits = calculator.volumeCredits;
   }
 }
 
