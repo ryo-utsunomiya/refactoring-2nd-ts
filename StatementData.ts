@@ -1,5 +1,5 @@
 import { Invoice, Play, Performance } from "./types";
-import PerformanceCalculator from "./PerformanceCalculator";
+import { createPerformanceCalculator } from "./PerformanceCalculator";
 
 class StatementDataPerformance {
   playID: string;
@@ -13,7 +13,7 @@ class StatementDataPerformance {
     this.audience = aPerformance.audience;
     this.play = play;
 
-    const calculator = new PerformanceCalculator(aPerformance, play);
+    const calculator = createPerformanceCalculator(aPerformance, play);
     this.amount = calculator.amount;
     this.volumeCredits = calculator.volumeCredits;
   }
