@@ -2,11 +2,9 @@ import { Performance, Play } from "./types";
 
 class PerformanceCalculator {
   performance: Performance;
-  play: Play;
 
-  constructor(aPerformance: Performance, aPlay: Play) {
+  constructor(aPerformance: Performance) {
     this.performance = aPerformance;
-    this.play = aPlay;
   }
 
   get amount(): number {
@@ -14,12 +12,7 @@ class PerformanceCalculator {
   }
 
   get volumeCredits(): number {
-    let result = 0;
-    result += Math.max(this.performance.audience - 30, 0);
-    if (this.play.type === "comedy") {
-      result += Math.floor(this.performance.audience / 5);
-    }
-    return result;
+    throw new Error("subclass responsibility");
   }
 }
 
@@ -31,7 +24,12 @@ class TragedyCalculator extends PerformanceCalculator {
     }
     return result;
   }
+
+  get volumeCredits(): number {
+    return Math.max(this.performance.audience - 30, 0);
+  }
 }
+
 class ComedyCalculator extends PerformanceCalculator {
   get amount(): number {
     let result = 30000;
@@ -39,6 +37,13 @@ class ComedyCalculator extends PerformanceCalculator {
       result += 10000 + 500 * (this.performance.audience - 20);
     }
     result += 300 * this.performance.audience;
+    return result;
+  }
+
+  get volumeCredits(): number {
+    let result = 0;
+    result += Math.max(this.performance.audience - 30, 0);
+    result += Math.floor(this.performance.audience / 5);
     return result;
   }
 }
@@ -49,9 +54,9 @@ export function createPerformanceCalculator(
 ) {
   switch (aPlay.type) {
     case "tragedy":
-      return new TragedyCalculator(aPerformance, aPlay);
+      return new TragedyCalculator(aPerformance);
     case "comedy":
-      return new ComedyCalculator(aPerformance, aPlay);
+      return new ComedyCalculator(aPerformance);
     default:
       throw new Error(`unknown type: ${aPlay.type}`);
   }
