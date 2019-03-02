@@ -1,6 +1,6 @@
-import { Performance, Play } from "./types";
+import {Performance, Play} from "./types";
 
-abstract class PerformanceCalculator {
+export abstract class PerformanceCalculator {
   performance: Performance;
 
   constructor(aPerformance: Performance) {
@@ -8,6 +8,7 @@ abstract class PerformanceCalculator {
   }
 
   abstract get amount(): number;
+
   abstract get volumeCredits(): number;
 }
 

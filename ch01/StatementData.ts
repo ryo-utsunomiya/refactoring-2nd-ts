@@ -1,21 +1,25 @@
-import { Invoice, Play, Performance } from "./types";
-import { createPerformanceCalculator } from "./PerformanceCalculator";
+import {Invoice, Play, Performance} from "./types";
+import {createPerformanceCalculator, PerformanceCalculator} from "./PerformanceCalculator";
 
 class StatementDataPerformance {
   playID: string;
   audience: number;
   play: Play;
-  readonly amount: number;
-  readonly volumeCredits: number;
+  private calculator: PerformanceCalculator;
 
   constructor(aPerformance: Performance, play: Play) {
     this.playID = aPerformance.playID;
     this.audience = aPerformance.audience;
     this.play = play;
+    this.calculator = createPerformanceCalculator(aPerformance, play);
+  }
 
-    const calculator = createPerformanceCalculator(aPerformance, play);
-    this.amount = calculator.amount;
-    this.volumeCredits = calculator.volumeCredits;
+  get amount(): number {
+    return this.calculator.amount;
+  }
+
+  get volumeCredits(): number {
+    return this.calculator.volumeCredits;
   }
 }
 
