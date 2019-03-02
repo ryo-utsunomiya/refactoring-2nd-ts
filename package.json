@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "test": "ts-node *.spec.ts"
+    "test": "ts-node **/*.spec.ts"
   },
   "devDependencies": {
     "@types/node": "^10.12.10",

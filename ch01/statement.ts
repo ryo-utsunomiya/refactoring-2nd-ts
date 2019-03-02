@@ -1,5 +1,5 @@
-import { Invoice, Play } from "./types";
-import { StatementData } from "./StatementData";
+import {Invoice, Play} from "./types";
+import {StatementData} from "./StatementData";
 
 function usd(aNumber: number): string {
   return new Intl.NumberFormat("en-US", {
@@ -14,9 +14,7 @@ function renderPlainText(data: StatementData): string {
 
   for (let perf of data.performances) {
     // print line for this order
-    result += `  ${perf.play.name}: ${usd(perf.amount)} (${
-      perf.audience
-    } seats)\n`;
+    result += `  ${perf.play.name}: ${usd(perf.amount)} (${perf.audience} seats)\n`;
   }
 
   result += `Amount owed is ${usd(data.totalAmount)}\n`;
