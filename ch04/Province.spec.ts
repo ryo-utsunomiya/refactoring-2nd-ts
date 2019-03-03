@@ -4,7 +4,7 @@ import sampleProvinceData from "./sampleProvinceData";
 import Province from './Province';
 
 describe('province', () => {
-  let asia;
+  let asia: Province;
   beforeEach(() => {
     asia = new Province(sampleProvinceData());
   });
@@ -32,7 +32,7 @@ describe('province', () => {
 });
 
 describe('no producers', () => {
-  let noProducers;
+  let noProducers: Province;
   beforeEach(() => {
     noProducers = new Province({
       name: "No producers",
