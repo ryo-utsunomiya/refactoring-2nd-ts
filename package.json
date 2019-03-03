@@ -6,10 +6,13 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "test": "ts-node **/*.spec.ts"
+    "test": "ts-node **/*.spec.ts",
+    "mocha": "mocha --require ts-node/register **/*.spec.ts"
   },
   "devDependencies": {
+    "@types/mocha": "^5.2.6",
     "@types/node": "^10.12.10",
+    "mocha": "^6.0.2",
     "ts-node": "^7.0.1",
     "typescript": "^3.1.6"
   }
