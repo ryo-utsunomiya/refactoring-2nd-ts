@@ -8,4 +8,8 @@ describe('province', () => {
     const asia = new Province(sampleProvinceData());
     assert.strictEqual(asia.shortfall, 5);
   });
+  it('profit', () => {
+    const asia = new Province(sampleProvinceData());
+    assert.strictEqual(asia.profit, 230);
+  });
 });
