@@ -31,7 +31,6 @@ export default class Producer {
   }
 
   set production(value: number) {
-    this._province.totalProduction += value - this._production;
     this._production = value;
   }
 }

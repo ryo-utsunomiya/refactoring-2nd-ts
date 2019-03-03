@@ -28,11 +28,7 @@ export default class Province {
   }
 
   get totalProduction(): number {
-    return this._totalProduction;
-  }
-
-  set totalProduction(value: number) {
-    this._totalProduction = value;
+    return this._producers.reduce((total, p) => total + p.production, 0);
   }
 
   get demand(): number {

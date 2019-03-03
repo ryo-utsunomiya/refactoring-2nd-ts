@@ -14,4 +14,9 @@ describe('province', () => {
   it('profit', () => {
     assert.strictEqual(asia.profit, 230);
   });
+  it('change production', () => {
+    asia.producers[0].production = 20;
+    assert.strictEqual(asia.shortfall, -6);
+    assert.strictEqual(asia.profit, 292);
+  });
 });
